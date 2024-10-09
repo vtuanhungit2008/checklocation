@@ -17,11 +17,15 @@ app.post('/api/save-location', (req, res) => {
         return res.status(400).send('Invalid location data.');
     }
 
-    // Log vị trí để kiểm tra
+    // Tạo link Google Maps từ tọa độ
+    const googleMapsLink = `https://www.google.com/maps/?q=${latitude},${longitude}`;
+
+    // Log vị trí và link Google Maps
     console.log(`Received location: Latitude: ${latitude}, Longitude: ${longitude}`);
+    console.log(`Google Maps Link: ${googleMapsLink}`);
 
     // Phản hồi thành công
-    res.json({ success: true, message: 'Location received successfully.' });
+    res.json({ success: true, message: 'Location received successfully.', googleMapsLink });
 });
 
 // Máy chủ lắng nghe ở cổng 3000
