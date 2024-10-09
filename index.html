@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Location Sharing</title>
+    <script>
+        function sendLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const lat = position.coords.latitude;
+                        const lon = position.coords.longitude;
+                        console.log(lat,lon);
+                        
+                        // Gửi dữ liệu vị trí tới Node.js server chạy trên localhost:3000
+                        fetch('http://localhost:3000/api/save-location', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                latitude: lat,
+                                longitude: lon
+                            })
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            console.log('Success:', data);
+                            document.getElementById("output").innerHTML = "Location sent successfully!";
+                        })
+                        .catch((error) => {
+                            console.error('Error:', error);
+                            document.getElementById("output").innerHTML = "Failed to send location.";
+                        });
+                    },
+                    (error) => {
+                        alert("Unable to retrieve location. Make sure you allow location sharing.");
+                    }
+                );
+            } else {
+                alert("Geolocation is not supported by your browser.");
+            }
+        }
+
+        // Tự động gửi vị trí khi trang tải
+        window.onload = function() {
+            sendLocation();
+        }
+    </script>
+</head>
+<body>
+    <h1>Location Sharing</h1>
+    <p id="output">Getting your location...</p>
+</body>
+</html>
